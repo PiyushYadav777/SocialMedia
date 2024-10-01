@@ -1,0 +1,50 @@
+<mat-card class="friends-suggestions-card">
+  <mat-card-header>
+    <mat-card-title>
+      {{ showRequests ? 'Pending Friend Requests' : 'Friends Suggestions' }}
+    </mat-card-title>
+    <button mat-button (click)="toggleView()">
+      {{ showRequests ? 'Suggestions' : 'Friend Requests' }}
+    </button>
+  </mat-card-header>
+  <mat-card-content>
+    <mat-spinner *ngIf="loading"></mat-spinner>
+    <div *ngIf="!loading && users.length === 0 && !showRequests">No users found.</div>
+    
+    <mat-list *ngIf="!loading && users.length > 0 && !showRequests">
+      <mat-list-item *ngFor="let user of limitedUsers">
+        <div class="profile-container">
+          <ng-container *ngIf="user.profile_img; else defaultIcon">
+            <img class="profile-pic" [src]="FILE_URL + user.profile_img" alt="Profile Image">
+          </ng-container>
+          <ng-template #defaultIcon>
+            <mat-icon matListIcon>person</mat-icon>
+          </ng-template>
+        </div>
+        <div class="user-info">
+          <div mat-line>{{ user.first_name }} {{ user.last_name }}</div>
+          <div mat-line>{{ user.email }}</div>
+        </div>
+        <button mat-raised-button color="primary" (click)="sendFriendRequest(user)">Connect</button>
+      </mat-list-item>
+    </mat-list>
+
+    <div *ngIf="!loading && friendRequests.length == 0 && showRequests">No friend requests.</div>
+    <mat-list *ngIf="!loading && friendRequests.length > 0 && showRequests">
+      <mat-list-item *ngFor="let request of friendRequests">
+        <div class="profile-container">
+          <mat-icon matListIcon>person</mat-icon>
+        </div>
+        <div class="user-info">
+          <div mat-line>{{ request.first_name }} {{ request.last_name }}</div>
+        </div>
+        <button mat-button color="primary" (click)="confirmRequest(request)"><mat-icon>check</mat-icon></button>
+        <button mat-button color="warn" (click)="cancelRequest(request)"><mat-icon>cancel</mat-icon></button>
+      </mat-list-item>
+    </mat-list>
+<br><br><br>
+    <div *ngIf="!showRequests && users.length > maxSuggestions">
+      <a mat-button class="view-all-button" [routerLink]="['/home/all-suggestions']">View all suggestions</a>
+    </div>
+  </mat-card-content>
+</mat-card>

@@ -1,0 +1,43 @@
+<mat-card class="all-suggestions-card">
+    <mat-card-header>
+        <mat-card-title> Friends Suggestions</mat-card-title>
+        <button mat-button [routerLink]="['/home']">Back</button>
+    </mat-card-header>
+    <mat-card-content>
+        <mat-spinner *ngIf="loading"></mat-spinner>
+        <div *ngIf="!loading && users.length == 0">No users found.</div>
+
+        <div class="input-group">
+            <div class="form-outline" data-mdb-input-init>
+                <input [(ngModel)]="searchQuery" (ngModelChange)="onSearchChange()" id="search-input" type="search"
+                    id="form1" class="form-control" placeholder="Search" />
+                <label class="form-label" for="form1"></label>
+            </div>
+        </div>
+
+        <mat-list *ngIf="!loading && users.length > 0">
+            <div class="">
+                <div>
+                    <mat-list-item *ngFor="let user of users">
+                        <div class="profile-container">
+                            <ng-container *ngIf="user.profile_img; else defaultIcon">
+                                <img class="profile-pic" [src]="FILE_URL + user.profile_img" alt="Profile Image">
+                            </ng-container>
+                            <ng-template #defaultIcon>
+                                <mat-icon matListIcon>person</mat-icon>
+                            </ng-template>
+                        </div>
+                        <div class="user-info">
+                            <div mat-line>{{ user.first_name }} {{ user.last_name }}</div>
+                        </div>
+                        <button mat-raised-button color="primary" (click)="sendFriendRequest(user)">Add Friend</button>
+                    </mat-list-item>
+                </div>
+            </div>
+        </mat-list>
+        <button mat-button color="accent" (click)="loadMore()" *ngIf="(totalCount > users.length)">
+            Load More
+        </button>
+    </mat-card-content>
+</mat-card>
+
